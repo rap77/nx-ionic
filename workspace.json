@@ -17,10 +17,7 @@
             "polyfills": "apps/ionic-app/src/polyfills.ts",
             "tsConfig": "apps/ionic-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "apps/ionic-app/src/favicon.ico",
-              "apps/ionic-app/src/assets"
-            ],
+            "assets": ["apps/ionic-app/src/favicon.ico", "apps/ionic-app/src/assets"],
             "styles": ["apps/ionic-app/src/styles.scss"],
             "scripts": []
           },
@@ -78,10 +75,7 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "apps/ionic-app/src/**/*.ts",
-              "apps/ionic-app/src/**/*.html"
-            ]
+            "lintFilePatterns": ["apps/ionic-app/src/**/*.ts", "apps/ionic-app/src/**/*.html"]
           }
         },
         "test": {
