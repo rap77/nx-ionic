@@ -27,6 +27,12 @@
     ]
   },
   "projects": {
+    "api": {
+      "tags": []
+    },
+    "core": {
+      "tags": []
+    },
     "ionic-app": {
       "tags": []
     },

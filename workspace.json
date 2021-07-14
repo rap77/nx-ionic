@@ -1,6 +1,89 @@
 {
   "version": 2,
   "projects": {
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.ts",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": [
+              "apps/api/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.ts",
+                  "with": "apps/api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/api/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/api"
+          ],
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "core": {
+      "root": "libs/core",
+      "sourceRoot": "libs/core/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/core/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/core"
+          ],
+          "options": {
+            "jestConfig": "libs/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "ionic-app": {
       "projectType": "application",
       "root": "apps/ionic-app",
@@ -9,7 +92,9 @@
       "targets": {
         "build": {
           "executor": "@angular-devkit/build-angular:browser",
-          "outputs": ["{options.outputPath}"],
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/apps/ionic-app",
             "index": "apps/ionic-app/src/index.html",
@@ -17,8 +102,13 @@
             "polyfills": "apps/ionic-app/src/polyfills.ts",
             "tsConfig": "apps/ionic-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["apps/ionic-app/src/favicon.ico", "apps/ionic-app/src/assets"],
-            "styles": ["apps/ionic-app/src/styles.scss"],
+            "assets": [
+              "apps/ionic-app/src/favicon.ico",
+              "apps/ionic-app/src/assets"
+            ],
+            "styles": [
+              "apps/ionic-app/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -75,12 +165,17 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/ionic-app/src/**/*.ts", "apps/ionic-app/src/**/*.html"]
+            "lintFilePatterns": [
+              "apps/ionic-app/src/**/*.ts",
+              "apps/ionic-app/src/**/*.html"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/ionic-app"],
+          "outputs": [
+            "coverage/apps/ionic-app"
+          ],
           "options": {
             "jestConfig": "apps/ionic-app/jest.config.js",
             "passWithNoTests": true
@@ -109,7 +204,9 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/ionic-app-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/ionic-app-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
