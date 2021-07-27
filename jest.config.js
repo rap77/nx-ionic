@@ -1,3 +1,3 @@
-module.exports = {
-  projects: ['<rootDir>/apps/ionic-app', '<rootDir>/apps/api', '<rootDir>/libs/core'],
-};
+const { getJestProjects } = require('@nrwl/jest');
+
+module.exports = { projects: getJestProjects() };

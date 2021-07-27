@@ -10,6 +10,9 @@ import { validationSchema } from "./config/validation";
       load: [configuration],
       validationSchema,
     }),
+    GrapQLModule.forRoot({
+      autoSchemaFile: true
+    })
   ],
   controllers: [],
   providers: [],
