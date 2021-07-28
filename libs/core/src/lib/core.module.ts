@@ -13,7 +13,8 @@ import { CoreResolver } from './core.resolver';
       validationSchema,
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: true
+      autoSchemaFile: true,
+      playground: true,
     })
   ],
   controllers: [],
