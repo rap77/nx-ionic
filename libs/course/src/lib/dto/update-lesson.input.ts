@@ -1,13 +1,13 @@
-import { Field, InputType } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateLessonInput {
   @Field({ nullable: true })
-  title?: string
+  title?: string;
 
   @Field({ nullable: true })
-  description?: string
+  description?: string;
 
   @Field({ nullable: true })
-  content?: string
+  content?: string;
 }

@@ -1,16 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Lesson {
   @Field({ nullable: true })
-  id?: string
+  id?: string;
 
   @Field({ nullable: true })
-  title?: string
+  title?: string;
 
   @Field({ nullable: true })
-  description?: string
+  description?: string;
 
   @Field({ nullable: true })
-  content?: string
+  content?: string;
 }

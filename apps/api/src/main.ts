@@ -5,7 +5,7 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { ConfigService } from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app/app.module';
 
@@ -17,7 +17,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3333;
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
-    Logger.log(`Running in ${config.get("environment")} mode`);
+    Logger.log(`Running in ${config.get('environment')} mode`);
   });
 }
 
