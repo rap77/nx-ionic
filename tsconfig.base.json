@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-ionic/core": ["libs/core/src/index.ts"]
+      "@nx-ionic/core": ["libs/core/src/index.ts"],
+      "@nx-ionic/course": ["libs/course/src/index.ts"],
+      "@nx-ionic/data": ["libs/data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

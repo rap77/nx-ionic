@@ -5,7 +5,7 @@
   "scripts": {
     "nx": "nx",
     "start:dev": "nx serve",
-    "start":"node dist/apps/api/main.js",
+    "start": "node dist/apps/api/main.js",
     "build:dev": "nx build",
     "build": "nx build api --prod",
     "test": "nx test",

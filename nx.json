@@ -33,12 +33,25 @@
     "core": {
       "tags": []
     },
+    "course": {
+      "tags": []
+    },
+    "data": {
+      "tags": []
+    },
     "ionic-app": {
       "tags": []
     },
     "ionic-app-e2e": {
       "tags": [],
       "implicitDependencies": ["ionic-app"]
+    },
+    "web-app": {
+      "tags": []
+    },
+    "web-app-e2e": {
+      "tags": [],
+      "implicitDependencies": ["web-app"]
     }
   }
 }
