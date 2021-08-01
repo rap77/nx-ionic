@@ -26,7 +26,10 @@
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
     "help": "nx help",
-    "postinstall": "ngcc --properties es2015 browser module main"
+    "postinstall": "ngcc --properties es2015 browser module main",
+    "prisma:migrate":"npx prisma migrate dev -n init",
+    "prisma:generate":"npx prisma generate",
+    "prisma:apply":"yarn prisma:migrate && yarn prisma:generate"
   },
   "private": true,
   "dependencies": {

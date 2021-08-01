@@ -1,3 +1,4 @@
+import { DataModule } from '@nx-ionic/data';
 import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
@@ -6,7 +7,7 @@ import { CoreModule } from '@nx-ionic/core';
 import { CourseModule } from '@nx-ionic/course';
 
 @Module({
-  imports: [CoreModule, CourseModule],
+  imports: [CoreModule, CourseModule,DataModule],
   controllers: [AppController],
   providers: [AppService],
 })

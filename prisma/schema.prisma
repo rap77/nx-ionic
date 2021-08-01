@@ -10,14 +10,8 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  email     String
+  email     String   @unique
+  firstName String?
+  lastName  String?
   password  String
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model Test {
-  id          BigInt @default(autoincrement())
-  descripcion String @db.VarChar(5000)
-
-  @@ignore
 }

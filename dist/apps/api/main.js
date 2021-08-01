@@ -136,6 +136,7 @@ exports.AppController = AppController;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
+const data_1 = __webpack_require__(/*! @nx-ionic/data */ "./libs/data/src/index.ts");
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const app_controller_1 = __webpack_require__(/*! ./app.controller */ "./apps/api/src/app/app.controller.ts");
 const app_service_1 = __webpack_require__(/*! ./app.service */ "./apps/api/src/app/app.service.ts");
@@ -145,7 +146,7 @@ let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     common_1.Module({
-        imports: [core_1.CoreModule, course_1.CourseModule],
+        imports: [core_1.CoreModule, course_1.CourseModule, data_1.DataModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })
@@ -209,7 +210,7 @@ function bootstrap() {
         const port = process.env.PORT || 3333;
         yield app.listen(port, () => {
             common_1.Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
-            common_1.Logger.log(`Running in ${config.get("environment")} mode`);
+            common_1.Logger.log(`Running in ${config.get('environment')} mode`);
         });
     });
 }
@@ -247,7 +248,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.configuration = void 0;
 const configuration = () => ({
     environment: "development",
-    port: parseInt(process.env.PORT || "3000", 10),
+    port: parseInt(process.env.PORT || '3000', 10),
+    admin: {
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
+    },
 });
 exports.configuration = configuration;
 
@@ -267,7 +272,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validationSchema = void 0;
 const Joi = __webpack_require__(/*! joi */ "joi");
 exports.validationSchema = Joi.object({
-    NODE_ENV: Joi.string().valid("development", "production", "test").required(),
+    NODE_ENV: Joi.string().valid('development', 'production', 'test').required(),
     PORT: Joi.number().default(3000),
 });
 
@@ -305,7 +310,7 @@ CoreModule = tslib_1.__decorate([
             graphql_1.GraphQLModule.forRoot({
                 autoSchemaFile: true,
                 playground: true,
-            })
+            }),
         ],
         controllers: [],
         providers: [core_resolver_1.CoreResolver],
@@ -422,7 +427,7 @@ let CourseService = class CourseService {
                 lessons: [
                     { id: 'lesson-1', title: 'Introduccion al curso', content: 'Hello world' },
                     { id: 'lesson-2', title: 'First REal lesson course', content: 'Get busy' },
-                ]
+                ],
             },
             {
                 id: 'grapql-forexperts',
@@ -430,7 +435,7 @@ let CourseService = class CourseService {
                 lessons: [
                     { id: 'lesson-1-course-2', title: 'Introduccion al export curso', content: 'Hello export' },
                     { id: 'lesson-2-course-2', title: 'First Real lesson export course', content: 'Get busy export' },
-                ]
+                ],
             },
         ];
     }
@@ -442,15 +447,15 @@ let CourseService = class CourseService {
     course(id /*number*/) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             /*  const found = await this.data.course.findOne({
-                where: { id },
-                include: this.courseIncludes,
-              })
-              if (!found) {
-                throw new NotFoundException(`Course with id ${id} not found!`)
-              }
-              return found
-              */
-            return this.items.find(item => item.id === id);
+              where: { id },
+              include: this.courseIncludes,
+            })
+            if (!found) {
+              throw new NotFoundException(`Course with id ${id} not found!`)
+            }
+            return found
+            */
+            return this.items.find((item) => item.id === id);
         });
     }
     createCourse(/*userId: number,*/ input) {
@@ -468,7 +473,7 @@ let CourseService = class CourseService {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const course = yield this.course(id);
             const updated = Object.assign(Object.assign(Object.assign({}, course), input), { lessons: lessons ? lessons : course.lessons });
-            this.items = this.items.map(item => {
+            this.items = this.items.map((item) => {
                 if (item.id === id) {
                     return updated;
                 }
@@ -476,9 +481,9 @@ let CourseService = class CourseService {
             });
             return updated;
             /* return this.data.course.update({
-               where: { id: course.id },
-               data: { ...input },
-             })*/
+              where: { id: course.id },
+              data: { ...input },
+            })*/
         });
     }
     deleteCourse(/*userId: number*,*/ id /*number*/) {
@@ -493,7 +498,7 @@ let CourseService = class CourseService {
             if (!course) {
                 return false;
             }
-            this.items = this.items.filter(item => item.id !== id);
+            this.items = this.items.filter((item) => item.id !== id);
             return true;
         });
     }
@@ -501,28 +506,29 @@ let CourseService = class CourseService {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const course = yield this.course(courseId);
             /* return this.data.lesson.create({
-               data: {
-                 course: {
-                   connect: { id: course.id },
-                 },
-                 ...input,
-               },
-             })*/
+              data: {
+                course: {
+                  connect: { id: course.id },
+                },
+                ...input,
+              },
+            })*/
             const newLesson = Object.assign({ id: Date.now().toString() }, input);
             this.updateCourse(courseId, {}, [...course.lessons, newLesson]);
             return newLesson;
         });
     }
-    updateLesson(/*userId: number,*/ courseId, lessonId /*number*/, input) {
+    updateLesson(
+    /*userId: number,*/ courseId, lessonId /*number*/, input) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             /* return this.data.lesson.update({
-               where: { id: lessonId },
-               data: { ...input },
-             })*/
+              where: { id: lessonId },
+              data: { ...input },
+            })*/
             const course = this.course(courseId);
-            const lesson = (yield course).lessons.find(item => item.id === lessonId);
+            const lesson = (yield course).lessons.find((item) => item.id === lessonId);
             const updated = Object.assign(Object.assign({}, lesson), input);
-            (yield course).lessons = (yield course).lessons.map(item => {
+            (yield course).lessons = (yield course).lessons.map((item) => {
                 if (item.id === lessonId) {
                     return updated;
                 }
@@ -535,17 +541,17 @@ let CourseService = class CourseService {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // TODO: Check if userId can actually delete this?
             /*    const deleted = await this.data.lesson.delete({ where: { id: lessonId } })
-            
-                return !!deleted*/
+        
+            return !!deleted*/
             const course = this.course(courseId);
             if (!course) {
                 return false;
             }
-            const lesson = (yield course).lessons.find(item => item.id === lessonId);
+            const lesson = (yield course).lessons.find((item) => item.id === lessonId);
             if (!lesson) {
                 return false;
             }
-            (yield course).lessons = (yield course).lessons.filter(item => item.id !== lessonId);
+            (yield course).lessons = (yield course).lessons.filter((item) => item.id !== lessonId);
             return true;
         });
     }
@@ -897,7 +903,8 @@ class LessonResolver {
     constructor(service) {
         this.service = service;
     }
-    createLesson(/*@CtxUser() user: User, */ courseId /*number*/, input) {
+    createLesson(
+    /*@CtxUser() user: User, */ courseId /*number*/, input) {
         return this.service.createLesson(/*user.id, */ courseId, input);
     }
     updateLesson(
@@ -943,6 +950,134 @@ LessonResolver = tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof course_service_1.CourseService !== "undefined" && course_service_1.CourseService) === "function" ? _c : Object])
 ], LessonResolver);
 exports.LessonResolver = LessonResolver;
+
+
+/***/ }),
+
+/***/ "./libs/data/src/index.ts":
+/*!********************************!*\
+  !*** ./libs/data/src/index.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
+tslib_1.__exportStar(__webpack_require__(/*! ./lib/data.module */ "./libs/data/src/lib/data.module.ts"), exports);
+
+
+/***/ }),
+
+/***/ "./libs/data/src/lib/data.module.ts":
+/*!******************************************!*\
+  !*** ./libs/data/src/lib/data.module.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DataModule = void 0;
+const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
+const data_service_1 = __webpack_require__(/*! ./data.service */ "./libs/data/src/lib/data.service.ts");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+let DataModule = class DataModule {
+};
+DataModule = tslib_1.__decorate([
+    common_1.Module({
+        controllers: [],
+        providers: [data_service_1.DataService],
+        exports: [],
+    })
+], DataModule);
+exports.DataModule = DataModule;
+
+
+/***/ }),
+
+/***/ "./libs/data/src/lib/data.service.ts":
+/*!*******************************************!*\
+  !*** ./libs/data/src/lib/data.service.ts ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var _a;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DataService = void 0;
+const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+let DataService = class DataService extends client_1.PrismaClient {
+    constructor(config) {
+        super();
+        this.config = config;
+        this.defaultAdmin = this.config.get('admin');
+    }
+    onModuleDestroy() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.$disconnect();
+        });
+    }
+    onModuleInit() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.$connect();
+            yield this.ensureAdminUser();
+        });
+    }
+    createUser({ email, password }) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.user.create({
+                data: {
+                    email,
+                    password,
+                },
+            });
+        });
+    }
+    findUserByEmail(email) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.user.findFirst({
+                where: {
+                    email,
+                },
+            });
+        });
+    }
+    findUserById(userId) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.user.findFirst({
+                where: {
+                    id: userId,
+                },
+            });
+        });
+    }
+    ensureAdminUser() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            // Check if we have an admin
+            const found = yield this.findUserByEmail(this.defaultAdmin.email);
+            if (found) {
+                common_1.Logger.log(`Admin user: ${found.email}`, 'DataService');
+                return true;
+            }
+            // If not, create it for us
+            const created = yield this.createUser(this.defaultAdmin);
+            common_1.Logger.log(`Created Admin user: ${created.email}`, 'DataService');
+        });
+    }
+};
+DataService = tslib_1.__decorate([
+    common_1.Injectable(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], DataService);
+exports.DataService = DataService;
 
 
 /***/ }),
@@ -1000,6 +1135,17 @@ module.exports = require("@nestjs/core");
 /***/ (function(module, exports) {
 
 module.exports = require("@nestjs/graphql");
+
+/***/ }),
+
+/***/ "@prisma/client":
+/*!*********************************!*\
+  !*** external "@prisma/client" ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("@prisma/client");
 
 /***/ }),
 

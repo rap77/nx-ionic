@@ -1,6 +1,6 @@
 import { Lesson } from './models/lesson';
 //import { DataService } from '@beehive/data'
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Course } from './models/course';
 import { CreateCourseInput } from './dto/create-course.input';
 import { CreateLessonInput } from './dto/create-lesson.input';
