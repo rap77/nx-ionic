@@ -33,22 +33,21 @@ export class CourseService {
     },
   ];
 
-  constructor(private readonly data: DataService) { }
+  constructor(private readonly data: DataService) {}
 
   public courses() {
-    return this.data.course.findMany({ include: this.courseIncludes })
+    return this.data.course.findMany({ include: this.courseIncludes });
   }
 
   public async course(id: number) {
     const found = await this.data.course.findUnique({
       where: { id },
       include: this.courseIncludes,
-    })
+    });
     if (!found) {
-      throw new NotFoundException(`Course with id ${id} not found!`)
+      throw new NotFoundException(`Course with id ${id} not found!`);
     }
-    return found
-
+    return found;
   }
 
   public createCourse(/*userId: number,*/ input: CreateCourseInput) {
@@ -57,7 +56,7 @@ export class CourseService {
         ...input,
         //author: { connect: { id: userId } },
       },
-    })
+    });
   }
 
   public async updateCourse(/*userId: number,*/ id: number, input: UpdateCourseInput, lessons?: Lesson[]) {
@@ -66,7 +65,7 @@ export class CourseService {
     return this.data.course.update({
       where: { id: course.id },
       data: { ...input },
-    })
+    });
   }
 
   public async deleteCourse(/*userId: number*,*/ id: number) {
@@ -74,8 +73,8 @@ export class CourseService {
       where: {
         id,
       },
-    })
-    return !!deleted
+    });
+    return !!deleted;
   }
 
   public async createLesson(/*userId: number,*/ courseId: number, input: CreateLessonInput) {
@@ -88,24 +87,20 @@ export class CourseService {
         },
         ...input,
       },
-    })
+    });
   }
 
-  public async updateLesson(
-    /*userId: number,*/ courseId: number,
-    lessonId: number,
-    input: UpdateLessonInput,
-  ) {
+  public async updateLesson(/*userId: number,*/ courseId: number, lessonId: number, input: UpdateLessonInput) {
     return this.data.lesson.update({
       where: { id: lessonId },
       data: { ...input },
-    })
+    });
   }
 
   public async deleteLesson(/*userId: number,*/ courseId: number, lessonId: number) {
     // TODO: Check if userId can actually delete this?
-    const deleted = await this.data.lesson.delete({ where: { id: lessonId } })
+    const deleted = await this.data.lesson.delete({ where: { id: lessonId } });
 
-    return !!deleted
+    return !!deleted;
   }
 }

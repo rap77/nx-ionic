@@ -6,7 +6,7 @@ import { DataService } from '@nx-ionic/data';
 
 @Module({
   controllers: [],
-  providers: [CourseResolver, LessonResolver, CourseService,DataService],
+  providers: [CourseResolver, LessonResolver, CourseService, DataService],
   exports: [],
 })
 export class CourseModule {}
