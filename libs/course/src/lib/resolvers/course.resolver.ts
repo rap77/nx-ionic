@@ -16,7 +16,7 @@ export class CourseResolver {
   }
 
   @Query(() => Course, { nullable: true })
-  course(@Args('id') id: string /*number*/) {
+  course(@Args('id') id: number) {
     console.log(id);
     return this.service.course(id);
   }
@@ -29,13 +29,13 @@ export class CourseResolver {
 
   //  @UseGuards(GqlAuthGuard)
   @Mutation(() => Course, { nullable: true })
-  updateCourse(/*@CtxUser() user: User,*/ @Args('id') id: string /*number*/, @Args('input') input: UpdateCourseInput) {
+  updateCourse(/*@CtxUser() user: User,*/ @Args('id') id: number, @Args('input') input: UpdateCourseInput) {
     return this.service.updateCourse(/*user.id,*/ id, input);
   }
 
   //  @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean, { nullable: true })
-  deleteCourse(/*@CtxUser() user: User,*/ @Args('id') id: string /*number*/) {
+  deleteCourse(/*@CtxUser() user: User,*/ @Args('id') id: number) {
     return this.service.deleteCourse(/*user.id,*/ id);
   }
 }

@@ -14,4 +14,24 @@ model User {
   firstName String?
   lastName  String?
   password  String
+  courses   Course[]
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  imageUrl    String?
+  lessons     Lesson[]
+  author      User?    @relation(fields: [authorId], references: [id])
+  authorId    Int?
+}
+
+model Lesson {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  content     String?
+  course      Course  @relation(fields: [courseId], references: [id])
+  courseId    Int
 }

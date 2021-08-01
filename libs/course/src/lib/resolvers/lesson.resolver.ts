@@ -13,7 +13,7 @@ export class LessonResolver {
 
   @Mutation(() => Lesson, { nullable: true })
   createLesson(
-    /*@CtxUser() user: User, */ @Args('courseId') courseId: string /*number*/,
+    /*@CtxUser() user: User, */ @Args('courseId') courseId: number,
     @Args('input') input: CreateLessonInput,
   ) {
     return this.service.createLesson(/*user.id, */ courseId, input);
@@ -22,8 +22,8 @@ export class LessonResolver {
   @Mutation(() => Lesson, { nullable: true })
   updateLesson(
     /*@CtxUser() user: User, */
-    @Args('courseId') courseId: string /*number*/,
-    @Args('lessonId') lessonId: string /*number*/,
+    @Args('courseId') courseId: number,
+    @Args('lessonId') lessonId: number,
     @Args('input') input: UpdateLessonInput,
   ) {
     return this.service.updateLesson(/*user.id,*/ courseId, lessonId, input);
@@ -32,8 +32,8 @@ export class LessonResolver {
   @Mutation(() => Boolean, { nullable: true })
   deleteLesson(
     /*@CtxUser() user: User,*/
-    @Args('courseId') courseId: string /*number*/,
-    @Args('lessonId') lessonId: string /*number*/,
+    @Args('courseId') courseId: number,
+    @Args('lessonId') lessonId: number,
   ) {
     return this.service.deleteLesson(/*user.id,*/ courseId, lessonId);
   }

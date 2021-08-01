@@ -4,6 +4,6 @@ import { Module } from '@nestjs/common';
 @Module({
   controllers: [],
   providers: [DataService],
-  exports: [],
+  exports: [DataService],
 })
 export class DataModule {}

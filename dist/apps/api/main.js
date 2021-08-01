@@ -386,12 +386,13 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const course_resolver_1 = __webpack_require__(/*! ./resolvers/course.resolver */ "./libs/course/src/lib/resolvers/course.resolver.ts");
 const lesson_resolver_1 = __webpack_require__(/*! ./resolvers/lesson.resolver */ "./libs/course/src/lib/resolvers/lesson.resolver.ts");
 const course_service_1 = __webpack_require__(/*! ./course.service */ "./libs/course/src/lib/course.service.ts");
+const data_1 = __webpack_require__(/*! @nx-ionic/data */ "./libs/data/src/index.ts");
 let CourseModule = class CourseModule {
 };
 CourseModule = tslib_1.__decorate([
     common_1.Module({
         controllers: [],
-        providers: [course_resolver_1.CourseResolver, lesson_resolver_1.LessonResolver, course_service_1.CourseService],
+        providers: [course_resolver_1.CourseResolver, lesson_resolver_1.LessonResolver, course_service_1.CourseService, data_1.DataService],
         exports: [],
     })
 ], CourseModule);
@@ -409,13 +410,15 @@ exports.CourseModule = CourseModule;
 
 "use strict";
 
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseService = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
-//import { DataService } from '@beehive/data'
+const data_1 = __webpack_require__(/*! @nx-ionic/data */ "./libs/data/src/index.ts");
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 let CourseService = class CourseService {
-    constructor() {
+    constructor(data) {
+        this.data = data;
         this.courseIncludes = {
             author: true,
             lessons: true,
@@ -439,125 +442,75 @@ let CourseService = class CourseService {
             },
         ];
     }
-    // constructor(private readonly data: DataService) {}
     courses() {
-        return this.items;
-        // return this.data.course.findMany({ include: this.courseIncludes })
+        return this.data.course.findMany({ include: this.courseIncludes });
     }
-    course(id /*number*/) {
+    course(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            /*  const found = await this.data.course.findOne({
-              where: { id },
-              include: this.courseIncludes,
-            })
+            const found = yield this.data.course.findUnique({
+                where: { id },
+                include: this.courseIncludes,
+            });
             if (!found) {
-              throw new NotFoundException(`Course with id ${id} not found!`)
+                throw new common_1.NotFoundException(`Course with id ${id} not found!`);
             }
-            return found
-            */
-            return this.items.find((item) => item.id === id);
+            return found;
         });
     }
     createCourse(/*userId: number,*/ input) {
-        /*return this.data.course.create({
-          data: {
-            ...input,
-            author: { connect: { id: userId } },
-          },
-        })*/
-        const newCourse = Object.assign({ id: Date.now().toString() }, input);
-        this.items.push(newCourse);
-        return newCourse;
+        return this.data.course.create({
+            data: Object.assign({}, input),
+        });
     }
-    updateCourse(/*userId: number,*/ id /*number*/, input, lessons) {
+    updateCourse(/*userId: number,*/ id, input, lessons) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const course = yield this.course(id);
-            const updated = Object.assign(Object.assign(Object.assign({}, course), input), { lessons: lessons ? lessons : course.lessons });
-            this.items = this.items.map((item) => {
-                if (item.id === id) {
-                    return updated;
-                }
-                return item;
+            return this.data.course.update({
+                where: { id: course.id },
+                data: Object.assign({}, input),
             });
-            return updated;
-            /* return this.data.course.update({
-              where: { id: course.id },
-              data: { ...input },
-            })*/
         });
     }
-    deleteCourse(/*userId: number*,*/ id /*number*/) {
+    deleteCourse(/*userId: number*,*/ id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            /*const deleted = await this.data.course.delete({
-              where: {
-                id,
-              },
-            })
-            return !!deleted*/
-            const course = this.course(id);
-            if (!course) {
-                return false;
-            }
-            this.items = this.items.filter((item) => item.id !== id);
-            return true;
+            const deleted = yield this.data.course.delete({
+                where: {
+                    id,
+                },
+            });
+            return !!deleted;
         });
     }
-    createLesson(/*userId: number,*/ courseId /*number*/, input) {
+    createLesson(/*userId: number,*/ courseId, input) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const course = yield this.course(courseId);
-            /* return this.data.lesson.create({
-              data: {
-                course: {
-                  connect: { id: course.id },
-                },
-                ...input,
-              },
-            })*/
-            const newLesson = Object.assign({ id: Date.now().toString() }, input);
-            this.updateCourse(courseId, {}, [...course.lessons, newLesson]);
-            return newLesson;
+            return this.data.lesson.create({
+                data: Object.assign({ course: {
+                        connect: { id: course.id },
+                    } }, input),
+            });
         });
     }
     updateLesson(
-    /*userId: number,*/ courseId, lessonId /*number*/, input) {
+    /*userId: number,*/ courseId, lessonId, input) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            /* return this.data.lesson.update({
-              where: { id: lessonId },
-              data: { ...input },
-            })*/
-            const course = this.course(courseId);
-            const lesson = (yield course).lessons.find((item) => item.id === lessonId);
-            const updated = Object.assign(Object.assign({}, lesson), input);
-            (yield course).lessons = (yield course).lessons.map((item) => {
-                if (item.id === lessonId) {
-                    return updated;
-                }
-                return item;
+            return this.data.lesson.update({
+                where: { id: lessonId },
+                data: Object.assign({}, input),
             });
-            return updated;
         });
     }
-    deleteLesson(/*userId: number,*/ courseId, lessonId /*number*/) {
+    deleteLesson(/*userId: number,*/ courseId, lessonId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // TODO: Check if userId can actually delete this?
-            /*    const deleted = await this.data.lesson.delete({ where: { id: lessonId } })
-        
-            return !!deleted*/
-            const course = this.course(courseId);
-            if (!course) {
-                return false;
-            }
-            const lesson = (yield course).lessons.find((item) => item.id === lessonId);
-            if (!lesson) {
-                return false;
-            }
-            (yield course).lessons = (yield course).lessons.filter((item) => item.id !== lessonId);
-            return true;
+            const deleted = yield this.data.lesson.delete({ where: { id: lessonId } });
+            return !!deleted;
         });
     }
 };
 CourseService = tslib_1.__decorate([
-    common_1.Injectable()
+    common_1.Injectable(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof data_1.DataService !== "undefined" && data_1.DataService) === "function" ? _a : Object])
 ], CourseService);
 exports.CourseService = CourseService;
 
@@ -816,7 +769,7 @@ let CourseResolver = class CourseResolver {
     courses() {
         return this.service.courses();
     }
-    course(id /*number*/) {
+    course(id) {
         console.log(id);
         return this.service.course(id);
     }
@@ -825,11 +778,11 @@ let CourseResolver = class CourseResolver {
         return this.service.createCourse(/*user.id,*/ input);
     }
     //  @UseGuards(GqlAuthGuard)
-    updateCourse(/*@CtxUser() user: User,*/ id /*number*/, input) {
+    updateCourse(/*@CtxUser() user: User,*/ id, input) {
         return this.service.updateCourse(/*user.id,*/ id, input);
     }
     //  @UseGuards(GqlAuthGuard)
-    deleteCourse(/*@CtxUser() user: User,*/ id /*number*/) {
+    deleteCourse(/*@CtxUser() user: User,*/ id) {
         return this.service.deleteCourse(/*user.id,*/ id);
     }
 };
@@ -843,7 +796,7 @@ tslib_1.__decorate([
     graphql_1.Query(() => course_1.Course, { nullable: true }),
     tslib_1.__param(0, graphql_1.Args('id')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:paramtypes", [Number]),
     tslib_1.__metadata("design:returntype", void 0)
 ], CourseResolver.prototype, "course", null);
 tslib_1.__decorate([
@@ -858,14 +811,14 @@ tslib_1.__decorate([
     tslib_1.__param(0, graphql_1.Args('id')),
     tslib_1.__param(1, graphql_1.Args('input')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, typeof (_b = typeof update_course_input_1.UpdateCourseInput !== "undefined" && update_course_input_1.UpdateCourseInput) === "function" ? _b : Object]),
+    tslib_1.__metadata("design:paramtypes", [Number, typeof (_b = typeof update_course_input_1.UpdateCourseInput !== "undefined" && update_course_input_1.UpdateCourseInput) === "function" ? _b : Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], CourseResolver.prototype, "updateCourse", null);
 tslib_1.__decorate([
     graphql_1.Mutation(() => Boolean, { nullable: true }),
     tslib_1.__param(0, graphql_1.Args('id')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:paramtypes", [Number]),
     tslib_1.__metadata("design:returntype", void 0)
 ], CourseResolver.prototype, "deleteCourse", null);
 CourseResolver = tslib_1.__decorate([
@@ -904,17 +857,17 @@ class LessonResolver {
         this.service = service;
     }
     createLesson(
-    /*@CtxUser() user: User, */ courseId /*number*/, input) {
+    /*@CtxUser() user: User, */ courseId, input) {
         return this.service.createLesson(/*user.id, */ courseId, input);
     }
     updateLesson(
     /*@CtxUser() user: User, */
-    courseId /*number*/, lessonId /*number*/, input) {
+    courseId, lessonId, input) {
         return this.service.updateLesson(/*user.id,*/ courseId, lessonId, input);
     }
     deleteLesson(
     /*@CtxUser() user: User,*/
-    courseId /*number*/, lessonId /*number*/) {
+    courseId, lessonId) {
         return this.service.deleteLesson(/*user.id,*/ courseId, lessonId);
     }
 };
@@ -923,7 +876,7 @@ tslib_1.__decorate([
     tslib_1.__param(0, graphql_1.Args('courseId')),
     tslib_1.__param(1, graphql_1.Args('input')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, typeof (_a = typeof create_lesson_input_1.CreateLessonInput !== "undefined" && create_lesson_input_1.CreateLessonInput) === "function" ? _a : Object]),
+    tslib_1.__metadata("design:paramtypes", [Number, typeof (_a = typeof create_lesson_input_1.CreateLessonInput !== "undefined" && create_lesson_input_1.CreateLessonInput) === "function" ? _a : Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], LessonResolver.prototype, "createLesson", null);
 tslib_1.__decorate([
@@ -932,7 +885,7 @@ tslib_1.__decorate([
     tslib_1.__param(1, graphql_1.Args('lessonId')),
     tslib_1.__param(2, graphql_1.Args('input')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, String, typeof (_b = typeof update_lesson_input_1.UpdateLessonInput !== "undefined" && update_lesson_input_1.UpdateLessonInput) === "function" ? _b : Object]),
+    tslib_1.__metadata("design:paramtypes", [Number, Number, typeof (_b = typeof update_lesson_input_1.UpdateLessonInput !== "undefined" && update_lesson_input_1.UpdateLessonInput) === "function" ? _b : Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], LessonResolver.prototype, "updateLesson", null);
 tslib_1.__decorate([
@@ -940,7 +893,7 @@ tslib_1.__decorate([
     tslib_1.__param(0, graphql_1.Args('courseId')),
     tslib_1.__param(1, graphql_1.Args('lessonId')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, String]),
+    tslib_1.__metadata("design:paramtypes", [Number, Number]),
     tslib_1.__metadata("design:returntype", void 0)
 ], LessonResolver.prototype, "deleteLesson", null);
 LessonResolver = tslib_1.__decorate([
@@ -966,6 +919,7 @@ exports.LessonResolver = LessonResolver;
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = __webpack_require__(/*! tslib */ "tslib");
 tslib_1.__exportStar(__webpack_require__(/*! ./lib/data.module */ "./libs/data/src/lib/data.module.ts"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./lib/data.service */ "./libs/data/src/lib/data.service.ts"), exports);
 
 
 /***/ }),
@@ -990,7 +944,7 @@ DataModule = tslib_1.__decorate([
     common_1.Module({
         controllers: [],
         providers: [data_service_1.DataService],
-        exports: [],
+        exports: [data_service_1.DataService],
     })
 ], DataModule);
 exports.DataModule = DataModule;
